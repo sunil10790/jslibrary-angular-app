@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="library">
+	<head>
+		<title>
+			Javascript Books
+		</title>
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="styles/form.css">
+	</head>
+	<body>
+		<h1 class="text-center">Awesome Javascript Books</h1>
+		<div ng-controller="LibraryController as libCtrl">
+			<ul class="list-group">
+				<li class="list-group-item clearfix" ng-repeat="product in libCtrl.product">
+					<img class="pull-left" ng-src="{{product.image}}">
+					<h2>{{product.name}}</h2>
+					<p>Author: {{product.author}}</p>
+					<h4><em>{{product.price | currency:"&#8377;"}}</em></h4>
+					<a href={{product.amazonLink}} class="btn btn-default" role="button" target="_blank" ng-show="product.amazonLink">Buy</a>
+					<a href={{product.freeBookLink}} class="btn btn-default" role="button" target="_blank" ng-show="product.freeBookLink">Free Link</a>
+
+
+					<!--------------------- Navigation Tabs ------------------>
+					<section ng-controller="PanelController as panelCtrl">
+						<ul class="nav nav-pills">
+							<li ng-class="{active:panelCtrl.isSelected(1)}">
+								<a href ng-click="panelCtrl.selectTab(1)">Description</a>
+							</li>
+							<li ng-class="{active:panelCtrl.isSelected(2)}">
+								<a href ng-click="panelCtrl.selectTab(2)">About the Author</a>
+							</li>
+							<li ng-class="{active:panelCtrl.isSelected(3)}">
+								<a href ng-click="panelCtrl.selectTab(3)">Reviews</a>
+							</li>
+						</ul>
+						<div class="panel" ng-show="panelCtrl.isSelected(1)">
+							<h4>Description</h4>
+							<p>{{product.description}}</p>
+						</div>
+						<div class="panel" ng-show="panelCtrl.isSelected(2)">
+							<h4>About the Author</h4>
+							<p>{{product.aboutAuthor}}</p>
+						</div>
+						<div class="panel" ng-show="panelCtrl.isSelected(3)">
+							<h4>Reviews</h4>
+							<blockquote ng-repeat="review in product.reviews">
+								<b>{{review.stars}} Stars</b>
+								{{review.body}}<br>
+								<cite>--{{review.author}} on {{review.createdOn | date:'dd/MM/yyyy @ hh:mm'}}</cite>
+							</blockquote>
+
+							<!------------------------ Form -------------------------->
+							<form role="form" name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)" novalidate>
+								<blockquote>
+									<b>{{reviewCtrl.review.stars}}</b>
+									{{reviewCtrl.review.body}}<br>
+									<cite>{{reviewCtrl.review.author}}</cite>
+								</blockquote>
+								<h4><b>Submit a Review</b></h4>
+								<div class="form-group">
+									<select class="form-control" ng-model="reviewCtrl.review.stars" placeholder="Rate this Book" required>
+										<option value="" disabled selected>Rate this Book</option>
+										<option value="1">1 Star</option>
+										<option value="2">2 Stars</option>
+										<option value="3">3 Stars</option>
+										<option value="4">4 Stars</option>
+										<option value="5">5 Stars</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<textarea class="form-control" placeholder="Write a short review of this book..." ng-model="reviewCtrl.review.body" required></textarea>
+								</div>
+								<div class="form-group">
+									<input class="form-control" placeholder="awesomeguy@gmail.com" ng-model="reviewCtrl.review.author" type="email" required />
+								</div>
+								<input class="btn btn-default" type="submit" value="Submit" />
+							</form>
+						</div>
+					</section>
+				</li>
+			</ul>
+		</div>
+
+		<script type="text/javascript" src="lib/angular.min.js"></script>
+		<script type="text/javascript" src="src/app.js"></script>
+	</body>
+</html>
